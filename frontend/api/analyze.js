@@ -1,9 +1,8 @@
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-export const config = {
-    runtime: 'edge',
-};
+// Remove Edge config to use default Node.js Serverless
+// export const config = { runtime: 'edge' };
 
 // Helper to try multiple models
 async function maximizeAnalysis(prompt, apiKey) {
@@ -37,43 +36,36 @@ async function maximizeAnalysis(prompt, apiKey) {
     throw new Error(lastError?.message || 'All models failed to respond.');
 }
 
-export default async function handler(req) {
-    // 1. Handle CORS (Edge style)
+export default async function handler(req, res) {
+    // 1. Handle CORS (Node.js style)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
+
     if (req.method === 'OPTIONS') {
-        return new Response(null, {
-            status: 200,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type'
-            }
-        });
+        res.status(200).end();
+        return;
     }
 
     if (req.method !== 'POST') {
-        return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-            status: 405,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
     try {
-        const { cvText, careerStage, isFounder } = await req.json();
+        const { cvText, careerStage, isFounder } = req.body;
 
         if (!cvText) {
-            return new Response(JSON.stringify({ error: 'CV Text is required' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return res.status(400).json({ error: 'CV Text is required' });
         }
 
-        // Access environment variable in Edge
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            return new Response(JSON.stringify({ error: 'Server Config Error: GEMINI_API_KEY missing' }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            console.error("❌ GEMINI_API_KEY missing");
+            return res.status(500).json({ error: 'Server Config Error: GEMINI_API_KEY missing' });
         }
 
         const prompt = `
@@ -105,25 +97,13 @@ export default async function handler(req) {
 
         const data = await maximizeAnalysis(prompt, apiKey);
 
-        return new Response(JSON.stringify(data), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
+        return res.status(200).json(data);
 
     } catch (error) {
         console.error('Final API Error:', error);
-        return new Response(JSON.stringify({
+        return res.status(500).json({
             error: 'Analysis Failed',
             details: error.message || 'Unknown error occurred'
-        }), {
-            status: 500,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
         });
     }
 }
