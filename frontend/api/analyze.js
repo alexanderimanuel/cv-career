@@ -8,11 +8,12 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 async function maximizeAnalysis(prompt, apiKey) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Updated Model Strategy: Prioritize Stable Flash 1.5
+    // Updated Model Strategy: Comprehensive fallback list
     const modelsToTry = [
-        "gemini-1.5-flash",         // STABLE & FAST (Best for Vercel)
-        "gemini-2.0-flash-exp",     // Experimental
-        "gemini-1.5-pro",
+        "gemini-1.5-flash",         // Primary
+        "gemini-1.5-flash-latest",  // Explicit latest alias
+        "gemini-1.5-pro",           // Strongest
+        "gemini-pro",               // Legacy Stable (Failsafe)
     ];
 
     let lastError = null;
