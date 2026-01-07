@@ -8,12 +8,13 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 async function maximizeAnalysis(prompt, apiKey) {
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // Updated Model Strategy: Comprehensive fallback list
+    // Updated Model Strategy: Comprehensive fallback list with SPECIFIC versions
     const modelsToTry = [
-        "gemini-1.5-flash",         // Primary
-        "gemini-1.5-flash-latest",  // Explicit latest alias
-        "gemini-1.5-pro",           // Strongest
-        "gemini-pro",               // Legacy Stable (Failsafe)
+        "gemini-1.5-flash-001",     // Specific Version (Most Reliable)
+        "gemini-1.5-flash",         // Alias
+        "gemini-1.5-pro-001",       // Specific Version
+        "gemini-pro",               // Legacy
+        "gemini-1.0-pro"            // Legacy Alternate
     ];
 
     let lastError = null;
