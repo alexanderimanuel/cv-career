@@ -13,6 +13,7 @@ import Footer from './components/Footer'
 import './index.css'
 import './components/hero.css'
 import './components/improvements.css'
+import { analyzeWithBackend } from './services/api'
 
 function App() {
   const [view, setView] = useState('home')
@@ -23,26 +24,8 @@ function App() {
     setIsAnalyzing(true)
 
     try {
-      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${API_BASE_URL}/api/analyze`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-
-      if (!response.ok) {
-        let errorMsg = 'Analysis failed';
-        try {
-          const errData = await response.json();
-          errorMsg = errData.error || errData.message || 'Analysis failed';
-        } catch (e) {
-          // If response is not JSON
-          errorMsg = response.statusText;
-        }
-        throw new Error(errorMsg);
-      }
-
-      const data = await response.json()
+      // Use centralized API service
+      const data = await analyzeWithBackend(formData);
       setAnalysisData(data)
       setTimeout(() => {
         setIsAnalyzing(false)
