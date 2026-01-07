@@ -20,13 +20,13 @@ const Footer = () => {
                 {/* Right Section: Social Links */}
                 <div className="footer-social">
                     <a
-                        href="https://instagram.com/firostack.tech"
+                        href="https://instagram.com/pt.firostack.tech"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="footer-social-link"
                     >
                         <Instagram className="w-5 h-5" />
-                        <span>@firostack.tech</span>
+                        <span>pt.firostack.tech</span>
                     </a>
                     <a
                         href="https://tiktok.com/@firostack.tech"

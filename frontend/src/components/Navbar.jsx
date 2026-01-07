@@ -27,7 +27,7 @@ const Navbar = ({ setView }) => {
 
         {/* Actions */}
         <div className="navbar-actions">
-          <button onClick={() => setView('docs')} className="nav-btn nav-btn-secondary">Docs</button>
+
           <button onClick={() => setView('get-started')} className="nav-btn nav-btn-primary">Get Started</button>
         </div>
       </div>
