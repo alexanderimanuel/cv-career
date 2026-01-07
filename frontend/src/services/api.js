@@ -1,13 +1,13 @@
 const BACKEND_URL = '/api/analyze';
 
-export const analyzeWithBackend = async (prompt) => {
+export const analyzeWithBackend = async (data) => {
     try {
         const response = await fetch(BACKEND_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify(data),
         });
 
         if (!response.ok) {
