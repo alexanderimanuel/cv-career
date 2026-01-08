@@ -10,11 +10,10 @@ async function maximizeAnalysis(prompt, apiKey) {
 
     // Updated Model Strategy: Comprehensive fallback list with SPECIFIC versions
     const modelsToTry = [
-        "gemini-1.5-flash-001",     // Specific Version (Most Reliable)
-        "gemini-1.5-flash",         // Alias
-        "gemini-1.5-pro-001",       // Specific Version
-        "gemini-pro",               // Legacy
-        "gemini-1.0-pro"            // Legacy Alternate
+        "gemini-1.5-flash",
+        "gemini-1.5-pro",
+        "gemini-1.5-flash-002",
+        "gemini-1.5-pro-002"
     ];
 
     let lastError = null;
